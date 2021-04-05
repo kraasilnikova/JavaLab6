@@ -13,14 +13,14 @@ public class MainFrame extends JFrame {
     private JMenuItem pauseMenuItem;
     private JMenuItem resumeMenuItem;
     private JMenuItem stickMenuItem;
+    private JMenuItem unstickMenuItem;
     private Field field = new Field();
-    // Конструктор главного окна приложения
+
     public MainFrame() {
         super("Программирование и синхронизация потоков");
         setSize(WIDTH, HEIGHT);
         Toolkit kit = Toolkit.getDefaultToolkit();
         setLocation((kit.getScreenSize().width - WIDTH)/2, (kit.getScreenSize().height - HEIGHT)/2);
-// Установить начальное состояние окна развѐрнутым на весь экран
         setExtendedState(MAXIMIZED_BOTH);
         JMenuBar menuBar = new JMenuBar();
         setJMenuBar(menuBar);
@@ -28,9 +28,8 @@ public class MainFrame extends JFrame {
         Action addBallAction = new AbstractAction("Добавить мяч") {
             public void actionPerformed(ActionEvent event) {
                 field.addBall();
-                if (!pauseMenuItem.isEnabled() && !resumeMenuItem.isEnabled() && !stickMenuItem.isEnabled()) {
-// Ни один из пунктов меню не являются
-// доступными - сделать доступным "Паузу"
+                if (!pauseMenuItem.isEnabled() && !resumeMenuItem.isEnabled() && !stickMenuItem.isEnabled() && !unstickMenuItem.isEnabled()) {
+                // Ни один из пунктов меню не являются доступными - сделать доступным "Паузу"
                     pauseMenuItem.setEnabled(true);
                     stickMenuItem.setEnabled(true);
                 }
@@ -58,15 +57,26 @@ public class MainFrame extends JFrame {
         };
         resumeMenuItem = controlMenu.add(resumeAction);
         resumeMenuItem.setEnabled(false);
-        Action stickAction = new AbstractAction("Магнетизм") {
+        JMenu magnetismMenu = new JMenu("Магнетизм");
+        menuBar.add(magnetismMenu);
+        Action stickAction = new AbstractAction("Приклеить мячи к стенкам") {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                stickMenuItem.setEnabled(false);
+                unstickMenuItem.setEnabled(true);
             }
         };
-        stickMenuItem = controlMenu.add(stickAction);
+        stickMenuItem = magnetismMenu.add(stickAction);
         stickMenuItem.setEnabled(false);
-
+        Action unstickAction = new AbstractAction("Отклеить мячи от стенок") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                stickMenuItem.setEnabled(true);
+                unstickMenuItem.setEnabled(false);
+            }
+        };
+        unstickMenuItem = magnetismMenu.add(unstickAction);
+        unstickMenuItem.setEnabled(false);
 // Добавить в центр граничной компоновки поле Field
         getContentPane().add(field, BorderLayout.CENTER);
     }

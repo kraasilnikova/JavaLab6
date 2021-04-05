@@ -23,7 +23,6 @@ public class BouncingBall implements Runnable {
     public BouncingBall(Field field) {
 // Необходимо иметь ссылку на поле, по которому прыгает мяч, чтобы отслеживать выход за его пределы через getWidth(), getHeight()
         this.field = field;
-// Радиус мяча случайного размера
         radius = new Double(Math.random()*(MAX_RADIUS - MIN_RADIUS)).intValue() + MIN_RADIUS;
 // Абсолютное значение скорости зависит от диаметра мяча, чем он больше, тем медленнее
         speed = new Double(Math.round(5*MAX_SPEED / radius)).intValue();
@@ -50,6 +49,7 @@ public class BouncingBall implements Runnable {
 // В противном случае - активный поток заснѐт
                 field.canMove(this);
                 if (x + speedX <= radius) {
+
                     speedX = -speedX;
                     x = radius;
                 } else
