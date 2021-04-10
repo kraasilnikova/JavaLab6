@@ -62,6 +62,7 @@ public class MainFrame extends JFrame {
         Action stickAction = new AbstractAction("Приклеить мячи к стенкам") {
             @Override
             public void actionPerformed(ActionEvent e) {
+                field.magnetized();
                 stickMenuItem.setEnabled(false);
                 unstickMenuItem.setEnabled(true);
             }
@@ -71,6 +72,7 @@ public class MainFrame extends JFrame {
         Action unstickAction = new AbstractAction("Отклеить мячи от стенок") {
             @Override
             public void actionPerformed(ActionEvent e) {
+                field.unmagnetized();
                 stickMenuItem.setEnabled(true);
                 unstickMenuItem.setEnabled(false);
             }

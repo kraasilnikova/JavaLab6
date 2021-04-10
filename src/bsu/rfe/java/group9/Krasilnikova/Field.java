@@ -8,7 +8,9 @@ import javax.swing.*;
 @SuppressWarnings("serial")
 public class Field extends JPanel {
     // Флаг приостановленности движения
-    private boolean paused;
+    public boolean paused;
+    public int magnet = 0;
+    private int change;
     // Динамический список скачущих мячей
     private ArrayList<BouncingBall> balls = new ArrayList<BouncingBall>(10);
     // Класс таймер отвечает за регулярную генерацию событий ActionEvent
@@ -48,12 +50,22 @@ public class Field extends JPanel {
 // Будим все ожидающие продолжения потоки
         notifyAll();
     }
+    public synchronized void magnetized() {
+        magnet = 1;
+    }
+    public synchronized void unmagnetized() {
+        magnet = 2;
+        notifyAll();
+    }
     // Синхронизированный метод проверки, может ли мяч двигаться (не включен ли режим паузы?)
-    public synchronized void canMove(BouncingBall ball) throws
-            InterruptedException {
+    public synchronized void canMove(BouncingBall ball) throws InterruptedException {
         if (paused) {
 // Если режим паузы включен, то поток, зашедший внутрь данного метода, засыпает
             wait();
         }
+    }
+    public synchronized void canStick (BouncingBall ball) throws InterruptedException {
+        if (magnet == 1)
+            wait();
     }
 }

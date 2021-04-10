@@ -19,6 +19,7 @@ public class BouncingBall implements Runnable {
     private int speed;
     private double speedX;
     private double speedY;
+    private boolean flag = true;
     // Конструктор класса BouncingBall
     public BouncingBall(Field field) {
 // Необходимо иметь ссылку на поле, по которому прыгает мяч, чтобы отслеживать выход за его пределы через getWidth(), getHeight()
@@ -43,43 +44,42 @@ public class BouncingBall implements Runnable {
     // Метод run() исполняется внутри потока. Когда он завершает работу, то завершается и поток
     public void run() {
         try {
-            while(true) {
+            while (true) {
 // Синхронизация потоков на самом объекте поля
 // Если движение разрешено - управление будет возвращено в метод
 // В противном случае - активный поток заснѐт
                 field.canMove(this);
                 if (x + speedX <= radius) {
-
+                    field.canStick(this);
                     speedX = -speedX;
                     x = radius;
-                } else
-                if (x + speedX >= field.getWidth() - radius) {
+                } else if (x + speedX >= field.getWidth() - radius) {
+                    field.canStick(this);
                     speedX = -speedX;
-                    x=new Double(field.getWidth()-radius).intValue();
-                } else
-                if (y + speedY <= radius) {
+                    x = new Double(field.getWidth() - radius).intValue();
+                } else if (y + speedY <= radius) {
+                    field.canStick(this);
                     speedY = -speedY;
                     y = radius;
-                } else
-                if (y + speedY >= field.getHeight() - radius) {
+                } else if (y + speedY >= field.getHeight() - radius) {
+                    field.canStick(this);
                     speedY = -speedY;
-                    y=new Double(field.getHeight()-radius).intValue();
-                } else {
+                    y = new Double(field.getHeight() - radius).intValue();
+                }
+                else {
                     x += speedX;
                     y += speedY;
                 }
-// Засыпаем на X миллисекунд, где X определяется
-// исходя из скорости
+// Засыпаем на X миллисекунд, где X определяется исходя из скорости
 // Скорость = 1 (медленно), засыпаем на 15 мс.
 // Скорость = 15 (быстро), засыпаем на 1 мс.
-                Thread.sleep(16-speed);
+                Thread.sleep(16 - speed);
             }
         } catch (InterruptedException ex) {
-// Если нас прервали, то ничего не делаем
-// и просто выходим (завершаемся)
+
         }
     }
-    // Метод прорисовки самого себя
+        // Метод прорисовки самого себя
     public void paint(Graphics2D canvas) {
         canvas.setColor(color);
         canvas.setPaint(color);
